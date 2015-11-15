@@ -2,6 +2,7 @@
 
 from random import SystemRandom
 from argparse import ArgumentParser
+import os
 
 # allow manually setting pass phrase length
 parser = ArgumentParser(description='Generate Diceware passphrases')
@@ -13,8 +14,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-def generate_word_dict():
-    wordlist = open('wordlist.txt', 'r')
+def generate_word_dict(path):
+    wordlist = open('{0}/wordlist.txt'.format(path), 'r')
     words = {}
 
     for entry in wordlist:
@@ -35,7 +36,8 @@ def generate_dice_roll():
 # rolls = [generate_dice_roll() for i in xrange(0, args.length)]
 
 def main(total_words):
-    words = generate_word_dict()
+    path = os.path.dirname(os.path.abspath(__file__))
+    words = generate_word_dict(path)
     
     phrase = [words[generate_dice_roll()] for i in xrange(0, total_words)]
     print(' '.join(phrase))
