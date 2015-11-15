@@ -1,34 +1,44 @@
 #! /usr/bin/python
 
-import requests
-from bs4 import BeautifulSoup
+from random import SystemRandom
 from argparse import ArgumentParser
 
+# allow manually setting pass phrase length
 parser = ArgumentParser(description='Generate Diceware passphrases')
 parser.add_argument(
     '--length',
     help='how many words in the phrase',
-    default=6
+    default=4
 )
 args = parser.parse_args()
 
-wordlist = open('wordlist.txt', 'r')
-words = {}
 
-for entry in wordlist:
-    num, word = entry.split('\t')
-    words[num] = word[:-1]
+def generate_word_dict():
+    wordlist = open('wordlist.txt', 'r')
+    words = {}
 
-print 'Generating Diceware passphrase...\n'
-params = 'sets=%s&num=5&min=1&max=6&order=random&format=html&rnd=new' % args.length
-page = requests.get('https://www.random.org/integer-sets/?%s' % params)
+    for entry in wordlist:
+        num, word = entry.split('\t')
+        words[int(num)] = word[:-1]
 
-soup = BeautifulSoup(page.content)
-data = soup.find('ul', class_='data').find_all('li')
+    return words
 
-phrase = []
-for el in data:
-    key = ''.join(el.get_text().split(' '))
-    phrase.append(words[key])
+def roll(multiplier=1):
+    r = SystemRandom()
+    return r.randint(1, 6)*multiplier
 
-print ' '.join(phrase)
+def generate_dice_roll():
+    nums = [1, 10, 100, 1000, 10000]
+    return sum([roll(i) for i in nums])
+
+
+# rolls = [generate_dice_roll() for i in xrange(0, args.length)]
+
+def main(total_words):
+    words = generate_word_dict()
+    
+    phrase = [words[generate_dice_roll()] for i in xrange(0, total_words)]
+    print(' '.join(phrase))
+
+
+main(args.length)
