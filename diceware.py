@@ -32,15 +32,18 @@ def generate_dice_roll():
     nums = [1, 10, 100, 1000, 10000]
     return sum([roll(i) for i in nums])
 
-
-# rolls = [generate_dice_roll() for i in xrange(0, args.length)]
+def generate_phrase(words, length):
+    word_list = [words[generate_dice_roll()] for i in range(0, length)]
+    return ' '.join(word_list)
 
 def main(total_words):
     path = os.path.dirname(os.path.abspath(__file__))
     words = generate_word_dict(path)
-    
-    phrase = [words[generate_dice_roll()] for i in xrange(0, total_words)]
-    print(' '.join(phrase))
+
+    # give a choice of seven phrases
+    for i in range(0, 7):
+        print(generate_phrase(words, total_words))
 
 
+# APPLICATION START
 main(args.length)
