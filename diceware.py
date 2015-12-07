@@ -8,6 +8,7 @@ import os
 parser = ArgumentParser(description='Generate Diceware passphrases')
 parser.add_argument(
     '--length',
+    type=int,
     help='how many words in the phrase',
     default=4
 )
